@@ -9,7 +9,7 @@
 import UIKit
 
 protocol SearchViewDelegate {
-    func didTappedSearchButton()
+    func didTappedSearchButton(for searchTerm: String)
 }
 
 class SearchView: UIView {
@@ -24,6 +24,8 @@ class SearchView: UIView {
     
     private lazy var searchTextField: IFTextField = {
         let textFiled = IFTextField()
+        textFiled.placeholder = "Enter username"
+        textFiled.delegate = self
         return textFiled
     }()
 
@@ -38,33 +40,49 @@ class SearchView: UIView {
     }
     
     private func commonInit() {
-        self.backgroundColor = .systemFill
-        createSearchButton()
-        createSearchTextField()
+        self.backgroundColor = .systemGray6
+        hideKeyboardWhenTappedAround()
+        
+        addSubviews(
+            searchTextField,
+            searchButton
+        )
+        
+        configureSearchButton()
+        configureSearchTextField()
     }
     
-    private func createSearchTextField() {
-        addSubview(searchTextField)
-        
-        searchTextField.centerXAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        searchTextField.centerYAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerYAnchor).isActive = true
-        
-        searchTextField.widthAnchor.constraint(equalTo: self.safeAreaLayoutGuide.widthAnchor, multiplier: 0.8).isActive = true
-        searchTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
+    
+    private func configureSearchTextField() {
+        NSLayoutConstraint.activate([
+            searchTextField.centerXAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerXAnchor),
+            searchTextField.centerYAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerYAnchor),
+            searchTextField.widthAnchor.constraint(equalTo: self.safeAreaLayoutGuide.widthAnchor, multiplier: 0.8),
+            searchTextField.heightAnchor.constraint(equalToConstant: 50)
+        ])
     }
     
-    private func createSearchButton() {
-        addSubview(searchButton)
-        
-        searchButton.widthAnchor.constraint(equalTo: self.safeAreaLayoutGuide.widthAnchor, multiplier: 0.8).isActive = true
-        searchButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        searchButton.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -50).isActive = true
-        searchButton.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+    private func configureSearchButton() {
+        NSLayoutConstraint.activate([
+            searchButton.widthAnchor.constraint(equalTo: self.safeAreaLayoutGuide.widthAnchor, multiplier: 0.8),
+            searchButton.heightAnchor.constraint(equalToConstant: 50),
+            searchButton.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -50),
+            searchButton.centerXAnchor.constraint(equalTo: self.centerXAnchor)
+        ])
     }
     
     @objc private func didTappedSearchButton() {
-        delegate?.didTappedSearchButton()
+        guard let searchTerm = self.searchTextField.text else {
+            return
+        }
+        delegate?.didTappedSearchButton(for: searchTerm)
     }
         
+}
+
+extension SearchView: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
 }

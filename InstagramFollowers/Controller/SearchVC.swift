@@ -19,15 +19,18 @@ class SearchVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        searchView.delegate = self
     }
     
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.navigationController?.navigationBar.isHidden = true
+    }
     
 }
 
 extension SearchVC: SearchViewDelegate {
-    func didTappedSearchButton() {
-        print("Hureeey")
+    func didTappedSearchButton(for searchTerm: String) {
+        print(searchTerm)
     }
 }

@@ -11,5 +11,4 @@ import UIKit
 
 enum IFColors {
     static let textFiledBorderColor = UIColor.gray
-    
 }
