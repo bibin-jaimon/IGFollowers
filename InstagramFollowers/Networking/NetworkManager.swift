@@ -29,8 +29,9 @@ enum IFError: String, Error {
 
 class NetworkManager {
     
-    let cache = NSCache<NSString, UIImage>()
     public static let shared = NetworkManager()
+    let cache = NSCache<NSString, UIImage>()
+    
     private init() { }
     
     func getFollowers(for userID: String) -> Future<[Followers], IFError> {
@@ -38,80 +39,45 @@ class NetworkManager {
         print(url.absoluteURL)
         
         return Future { promise in
-            
-            URLSession.shared.dataTask(with: url) { (data, response, error) in
-                
-                if let _ = error {
-                    promise(.failure(.unableToComplete))
-                }
-                
-                guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-                    promise(.failure(.invalidResponse))
-                    return
-                }
-                
-                guard let data = data else {
-                    promise(.failure(.invalidData))
-                    return
-                }
-                
-                do {
-                    let followers: [Followers] = try JSONDecoder().decode([Followers].self, from: data)
+            URLSession.shared.perform(url: url, responseModel: Followers.self) { (result) in
+                switch result {
+                case .success(let followers):
                     promise(.success(followers))
-                } catch let error{
-                    print(error.localizedDescription)
+                case .failure(let error):
+                    promise(.failure(error))
                 }
-                                
-            }.resume()
-            
-            
+            }
         }
-        
     }
-    
 }
 
-//
-//enum IFHTTPMethod {
-//    case post
-//    case get
-//}
-//
-//protocol Router {
-//    var baseURL: String { get }
-//    var endPoint: String { get }
-//    var method: IFHTTPMethod { get }
-//}
-//
-//enum UserRouter: Router {
-//
-//    var baseURL: String {
-//        return BASE_URL + "/users/"
-//    }
-//
-//    case getUserData(String)
-//    case getFollowers(String)
-//
-//    var endPoint: String {
-//        switch self {
-//        case .getFollowers(let userID):
-//            return "\(userID)/followers"
-//
-//        case .getUserData(let userID):
-//            return "\(userID)"
-//        }
-//    }
-//
-//    var method: IFHTTPMethod {
-//        switch self {
-//        case .getFollowers, .getUserData:
-//            return .get
-//        }
-//    }
-//}
-//
-//protocol Service {}
-//
-//extension Service {
-//    func perform(request: )
-//}
+
+extension URLSession {
+    func perform<T>(url: URL, responseModel: T.Type, then: @escaping (Result<[T], IFError>) -> Void) where T: Decodable {
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            
+            if let _ = error {
+                then(.failure(.unableToComplete))
+            }
+            
+            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                then(.failure(.invalidResponse))
+                return
+            }
+            
+            guard let data = data else {
+                then(.failure(.invalidData))
+                return
+            }
+            
+            do {
+                let followers: [T] = try JSONDecoder().decode([T].self, from: data)
+                then(.success(followers))
+            } catch let error {
+                print(error.localizedDescription)
+            }
+                            
+        }.resume()
+        
+    }
+}

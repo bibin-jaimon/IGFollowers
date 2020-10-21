@@ -13,6 +13,9 @@ class SearchVC: UIViewController {
     
     private var searchView: SearchView!
     private var getFollowersToken: AnyCancellable?
+    
+    private var followers = [Followers]()
+    
     override func loadView() {
         searchView = SearchView(delegate: self)
         view = searchView
@@ -24,7 +27,6 @@ class SearchVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         self.navigationController?.navigationBar.isHidden = true
     }
     
@@ -39,11 +41,11 @@ extension SearchVC: SearchViewDelegate {
                     switch completion {
                     case .finished:
                         print("Completion stops observing")
-                    case .failure(_):
-                        print("Error happended")
+                    case .failure(let error):
+                        print("Error: \(error.rawValue)")
                     }
-            }, receiveValue: { (response) in
-                print(response.count)
+            }, receiveValue: {[weak self] (followers) in
+                self?.followers = followers
             })
     }
 }
