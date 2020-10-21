@@ -7,11 +7,12 @@
 //
 
 import UIKit
+import Combine
 
 class SearchVC: UIViewController {
     
     private var searchView: SearchView!
-    
+    private var getFollowersToken: AnyCancellable?
     override func loadView() {
         searchView = SearchView(delegate: self)
         view = searchView
@@ -31,6 +32,18 @@ class SearchVC: UIViewController {
 
 extension SearchVC: SearchViewDelegate {
     func didTappedSearchButton(for searchTerm: String) {
-        print(searchTerm)
+        getFollowersToken = NetworkManager.shared.getFollowers(for: searchTerm)
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: { ( completion) in
+                    switch completion {
+                    case .finished:
+                        print("Completion stops observing")
+                    case .failure(_):
+                        print("Error happended")
+                    }
+            }, receiveValue: { (response) in
+                print(response.count)
+            })
     }
 }

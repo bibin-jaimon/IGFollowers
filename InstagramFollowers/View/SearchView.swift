@@ -72,6 +72,7 @@ class SearchView: UIView {
     }
     
     @objc private func didTappedSearchButton() {
+        self.searchTextField.text = "SAllen0400"
         guard let searchTerm = self.searchTextField.text else {
             return
         }
