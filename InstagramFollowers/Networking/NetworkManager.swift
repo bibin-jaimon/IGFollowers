@@ -14,12 +14,6 @@ import UIKit
 public let BASE_URL = "https://api.github.com/"
 //https://api.github.com/users/dmyma/followers?per_page=4&page=4
 
-struct Followers: Decodable {
-    let login: String
-    let avatar_url: String
-    let html_url: String
-}
-
 enum IFError: String, Error {
     case invalidUser = "No user fount"
     case unableToComplete
@@ -49,35 +43,26 @@ class NetworkManager {
             }
         }
     }
-}
-
-
-extension URLSession {
-    func perform<T>(url: URL, responseModel: T.Type, then: @escaping (Result<[T], IFError>) -> Void) where T: Decodable {
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            
-            if let _ = error {
-                then(.failure(.unableToComplete))
-            }
-            
-            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-                then(.failure(.invalidResponse))
-                return
-            }
-            
-            guard let data = data else {
-                then(.failure(.invalidData))
-                return
-            }
-            
-            do {
-                let followers: [T] = try JSONDecoder().decode([T].self, from: data)
-                then(.success(followers))
-            } catch let error {
-                print(error.localizedDescription)
-            }
-                            
-        }.resume()
+    
+    
+    func loadImage(for url: String, then: @escaping (Result<UIImage, IFError>) -> Void) {
         
+        if let image = cache.object(forKey: url as NSString) {
+            then(.success(image))
+        }
+        
+        guard let imageURL = URL(string: url) else {
+            return
+        }
+        
+        URLSession.shared.dataTask(with: imageURL) { [weak self] (data, response, error) in
+            if let data = data, let image = UIImage(data: data) {
+                self?.cache.setObject(image, forKey: url as NSString)
+                then(.success(image))
+            } else {
+                then(.failure(.invalidData))
+            }
+        }.resume()
     }
+    
 }

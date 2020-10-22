@@ -28,7 +28,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let searchVC = SearchVC()
         searchVC.title = "Search"
         searchVC.tabBarItem = UITabBarItem(tabBarSystemItem: .search, tag: 0)
-        
+        UINavigationBar.appearance().tintColor = .systemGreen
         return UINavigationController(rootViewController: searchVC)
     }
 

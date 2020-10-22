@@ -13,9 +13,7 @@ class SearchVC: UIViewController {
     
     private var searchView: SearchView!
     private var getFollowersToken: AnyCancellable?
-    
-    private var followers = [Followers]()
-    
+        
     override func loadView() {
         searchView = SearchView(delegate: self)
         view = searchView
@@ -33,6 +31,10 @@ class SearchVC: UIViewController {
 }
 
 extension SearchVC: SearchViewDelegate {
+    
+    //TODO:- refactor code to MVVM
+    //Why we need getFollowersToken
+    
     func didTappedSearchButton(for searchTerm: String) {
         getFollowersToken = NetworkManager.shared.getFollowers(for: searchTerm)
             .receive(on: DispatchQueue.main)
@@ -45,7 +47,9 @@ extension SearchVC: SearchViewDelegate {
                         print("Error: \(error.rawValue)")
                     }
             }, receiveValue: {[weak self] (followers) in
-                self?.followers = followers
+                let followersViewModel = followers.map({ return FollowersViewModel(follower: $0) })
+                let followersVC = FollowersViewController(followersViewModel: followersViewModel, title: searchTerm)
+                self?.navigationController?.pushViewController(followersVC, animated: true)
             })
     }
 }

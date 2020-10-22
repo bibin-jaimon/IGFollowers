@@ -72,8 +72,8 @@ class SearchView: UIView {
     }
     
     @objc private func didTappedSearchButton() {
-//        self.searchTextField.text = "SAllen0400"
-        guard let searchTerm = self.searchTextField.text else {
+        self.searchTextField.text = "SAllen0400"
+        guard let searchTerm = self.searchTextField.text, !searchTerm.isEmpty else {
             return
         }
         delegate?.didTappedSearchButton(for: searchTerm)

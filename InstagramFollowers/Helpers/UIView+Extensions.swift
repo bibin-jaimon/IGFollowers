@@ -33,11 +33,39 @@ extension UIView {
 }
 
 extension NSLayoutConstraint {
-    
     func activate(_ constraints :[NSLayoutConstraint]) {
         constraints.forEach { (constraint) in
             constraint.isActive = true
         }
     }
     
+}
+
+extension URLSession {
+    func perform<T>(url: URL, responseModel: T.Type, then: @escaping (Result<[T], IFError>) -> Void) where T: Decodable {
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            
+            if let _ = error {
+                then(.failure(.unableToComplete))
+            }
+            
+            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                then(.failure(.invalidResponse))
+                return
+            }
+            
+            guard let data = data else {
+                then(.failure(.invalidData))
+                return
+            }
+            
+            do {
+                let followers: [T] = try JSONDecoder().decode([T].self, from: data)
+                then(.success(followers))
+            } catch let error {
+                print(error.localizedDescription)
+            }
+                            
+        }.resume()
+    }
 }
