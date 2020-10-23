@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EF7F68B02541F29A00423D4B /* FollowerDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7F68AF2541F29A00423D4B /* FollowerDetailViewController.swift */; };
 		EF8997052541A90700CAEB55 /* FollowersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8997042541A90700CAEB55 /* FollowersViewController.swift */; };
 		EF8997072541A98C00CAEB55 /* Followers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8997062541A98C00CAEB55 /* Followers.swift */; };
 		EF8997092541B01800CAEB55 /* FollowersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8997082541B01800CAEB55 /* FollowersView.swift */; };
@@ -28,6 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EF7F68AF2541F29A00423D4B /* FollowerDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowerDetailViewController.swift; sourceTree = "<group>"; };
 		EF8997042541A90700CAEB55 /* FollowersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersViewController.swift; sourceTree = "<group>"; };
 		EF8997062541A98C00CAEB55 /* Followers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Followers.swift; sourceTree = "<group>"; };
 		EF8997082541B01800CAEB55 /* FollowersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersView.swift; sourceTree = "<group>"; };
@@ -138,6 +140,7 @@
 				EF967202254043D100382AC7 /* SearchVC.swift */,
 				EF967204254043E500382AC7 /* FavoriteVC.swift */,
 				EF8997042541A90700CAEB55 /* FollowersViewController.swift */,
+				EF7F68AF2541F29A00423D4B /* FollowerDetailViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -240,6 +243,7 @@
 				EF9672152540D1BA00382AC7 /* NetworkManager.swift in Sources */,
 				EF96721225407FC600382AC7 /* IFColors.swift in Sources */,
 				EF967209254075FE00382AC7 /* SearchView.swift in Sources */,
+				EF7F68B02541F29A00423D4B /* FollowerDetailViewController.swift in Sources */,
 				EF96720B25407BFC00382AC7 /* IFTextField.swift in Sources */,
 				EF967205254043E500382AC7 /* FavoriteVC.swift in Sources */,
 				EF8997052541A90700CAEB55 /* FollowersViewController.swift in Sources */,

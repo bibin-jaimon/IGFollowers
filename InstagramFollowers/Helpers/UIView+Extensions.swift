@@ -42,6 +42,17 @@ extension NSLayoutConstraint {
 }
 
 extension URLSession {
+    
+    func load(from url: URL, then: @escaping (Result<UIImage, IFError>) -> Void) {
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let data = data, let image = UIImage(data: data) {
+                then(.success(image))
+            } else {
+                then(.failure(.invalidData))
+            }
+        }.resume()
+    }
+    
     func perform<T>(url: URL, responseModel: T.Type, then: @escaping (Result<[T], IFError>) -> Void) where T: Decodable {
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             

@@ -7,11 +7,14 @@
 //
 
 import UIKit
+import Combine
 
 class FollowersViewController: UIViewController {
     
     let followersViewModel: [FollowersViewModel]
     var username: String?
+    
+    var getUserToken: AnyCancellable?
     
     var followersView = FollowersView()
     
@@ -33,7 +36,17 @@ class FollowersViewController: UIViewController {
         super.viewDidLoad()
         title = username
         followersView.updateData(followersViewModel)
+        
+        getUserToken = followersView.showFollowerDetailsPublisher
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { (follower) in
+                print(follower.name)
+                //api call for fetch details
+                let followerDetailsVC = FollowerDetailViewController()
+                self.present(followerDetailsVC, animated: true, completion: nil)
+            })
     }
+    
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

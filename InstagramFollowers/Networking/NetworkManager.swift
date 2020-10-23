@@ -45,9 +45,9 @@ class NetworkManager {
     }
     
     
-    func loadImage(for url: String, then: @escaping (Result<UIImage, IFError>) -> Void) {
+    func loadImage(from url: String, then: @escaping (Result<UIImage, IFError>) -> Void) {
         
-        if let image = cache.object(forKey: url as NSString) {
+        if let image = self.cache.object(forKey: url as NSString) {
             then(.success(image))
         }
         
@@ -55,14 +55,17 @@ class NetworkManager {
             return
         }
         
-        URLSession.shared.dataTask(with: imageURL) { [weak self] (data, response, error) in
-            if let data = data, let image = UIImage(data: data) {
+        URLSession.shared.load(from: imageURL) { [weak self] result in
+            switch result {
+            case .success(let image):
                 self?.cache.setObject(image, forKey: url as NSString)
                 then(.success(image))
-            } else {
+            case .failure(_):
                 then(.failure(.invalidData))
+                break
             }
-        }.resume()
+            
+        }
     }
     
 }

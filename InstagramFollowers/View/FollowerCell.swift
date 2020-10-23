@@ -68,13 +68,12 @@ class FollowerCell: UICollectionViewCell {
         self.followerViewModel = data
         self.nameLabel.text = followerViewModel?.name
 
-        NetworkManager.shared.loadImage(for: followerViewModel!.imageURL) { (result) in
+        NetworkManager.shared.loadImage(from: followerViewModel!.imageURL) { (result) in
             switch result {
             case .success(let image):
                 DispatchQueue.main.async {
                     self.profileImageView.image = image
                 }
-                
             default:
                 break
             }

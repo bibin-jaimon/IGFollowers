@@ -7,11 +7,14 @@
 //
 
 import UIKit
+import Combine
 
 class FollowersView: UIView {
     
     var followerViewModel = [FollowersViewModel]()
     let cellID = "CellID"
+    
+    var showFollowerDetailsPublisher = PassthroughSubject<FollowersViewModel, Never>()
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -65,6 +68,11 @@ extension FollowersView: UICollectionViewDataSource, UICollectionViewDelegate {
         let follower = followerViewModel[indexPath.row]
         cell.setupCell(with: follower)
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let item = self.followerViewModel[indexPath.row]
+        showFollowerDetailsPublisher.send(item)
     }
 }
 
