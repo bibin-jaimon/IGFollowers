@@ -14,6 +14,14 @@ final class FollowersView: UIView {
     var followerViewModel = [FollowersViewModel]()
     let cellID = "CellID"
     
+    enum Section {
+        case main
+    }
+    
+    typealias IFDataSource = UICollectionViewDiffableDataSource<Section, FollowersViewModel>
+    typealias SnapShot = NSDiffableDataSourceSnapshot<Section, FollowersViewModel>
+    private lazy var dataSource = makeDataSource()
+    
     var showFollowerDetailsPublisher = PassthroughSubject<FollowersViewModel, Never>()
     
     lazy var collectionView: UICollectionView = {
@@ -21,7 +29,6 @@ final class FollowersView: UIView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.enableProgramaticUI()
         collectionView.backgroundColor = .clear
-        collectionView.dataSource = self
         collectionView.delegate = self
         return collectionView
     }()
@@ -42,6 +49,7 @@ final class FollowersView: UIView {
     }
     
     private func configureCollectionView() {
+        applySnapShot(animatingDifferences: false)
         collectionView.register(FollowerCell.self, forCellWithReuseIdentifier: cellID)
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
@@ -53,33 +61,49 @@ final class FollowersView: UIView {
     
     func updateData(_ data: [FollowersViewModel]) {
         self.followerViewModel = data
-        self.collectionView.reloadData()
+        applySnapShot()
+    }
+    
+    private func makeDataSource() -> IFDataSource {
+        
+        let dataSource = IFDataSource(collectionView: collectionView) {[weak self] (collectionView, indexPath, followerViewModel) -> UICollectionViewCell? in
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self!.cellID, for: indexPath) as? FollowerCell
+            cell?.setupCell(with: followerViewModel)
+            return cell
+        }
+        
+        
+        return dataSource
+    }
+    
+    private func applySnapShot(animatingDifferences: Bool = true) {
+        var snapShot = SnapShot()
+        snapShot.appendSections([.main])
+        snapShot.appendItems(followerViewModel)
+        dataSource.apply(snapShot, animatingDifferences: animatingDifferences)
     }
 
 }
 
-extension FollowersView: UICollectionViewDataSource, UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return followerViewModel.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as! FollowerCell
-        let follower = followerViewModel[indexPath.row]
-        cell.setupCell(with: follower)
-        return cell
-    }
-    
+extension FollowersView: UICollectionViewDelegate {
+
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let item = self.followerViewModel[indexPath.row]
-        showFollowerDetailsPublisher.send(item)
+        
+        guard let follower = dataSource.itemIdentifier(for: indexPath) else {
+            return
+        }
+        
+        showFollowerDetailsPublisher.send(follower)
     }
 }
 
 extension FollowersView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let length = (UIScreen.main.bounds.size.width / 3) - 10
-        return CGSize(width: length, height: length)
+        var length = (UIScreen.main.bounds.size.width / 3) - 10
+        
+        length = length < 150 ? length : 150
+        
+        return CGSize(width: length, height: length + 10)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {

@@ -56,10 +56,9 @@ class FollowerCell: UICollectionViewCell {
     
     private func configureProfileImageView() {
         NSLayoutConstraint.activate([
-            profileImageView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 10),
-            profileImageView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            profileImageView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 0),
+            profileImageView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: 0),
             profileImageView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
-            profileImageView.heightAnchor.constraint(equalToConstant: self.frame.size.height - 30)
         ])
         
     }

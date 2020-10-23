@@ -9,7 +9,15 @@
 import Foundation
 import UIKit
 
-struct FollowersViewModel {
+struct FollowersViewModel: Hashable {
+    static func == (lhs: FollowersViewModel, rhs: FollowersViewModel) -> Bool {
+        lhs.name == rhs.name
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+    }
+    
     let follower: Followers
     
     var name: String {

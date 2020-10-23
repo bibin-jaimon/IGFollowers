@@ -57,15 +57,29 @@ class FollowersViewController: UIViewController {
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
+        navigationItem.hidesSearchBarWhenScrolling = false
+        
         
         searchController.searchTextPublisher
             .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
             .sink { [weak self] (searchText) in
+                searchController.searchBar.text = searchText
                 self?.filterFollowers(with: searchText)
         }.store(in: &tokens)
     }
     
     private func filterFollowers(with text: String) {
+        
+        guard !text.isEmpty else {
+            followersView.updateData(followersViewModel)
+            return
+        }
+        
+        let filteredArray = self.followersViewModel.filter {
+            $0.name.lowercased().contains(text.lowercased())
+        }
+        
+        followersView.updateData(filteredArray)
         
     }
     
@@ -77,6 +91,9 @@ class FollowersViewController: UIViewController {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.prefersLargeTitles = true
         self.navigationController?.navigationBar.isHidden = false
+        self.navigationController?.navigationBar.isTranslucent = true
+        self.view.layoutIfNeeded()
     }
 
 }
+

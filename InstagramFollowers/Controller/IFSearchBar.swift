@@ -11,8 +11,9 @@ import Combine
 
 class IFSearchBar: UISearchController, UISearchBarDelegate {
 
+
     var searchTextPublisher = PassthroughSubject<String, Never>()
-    
+        
     init() {
         super.init(searchResultsController: nil)
         commonInit()
@@ -25,9 +26,28 @@ class IFSearchBar: UISearchController, UISearchBarDelegate {
     private func commonInit() {
         searchBar.placeholder = "Search for followers"
         searchBar.delegate = self
+        obscuresBackgroundDuringPresentation = false
+        definesPresentationContext = true
+        searchBar.enableProgramaticUI()
+        isActive = true
+        
+//        searchResultsUpdater = self
+        
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        searchTextPublisher.send(searchText)
+        searchTextPublisher
+            .send(searchText)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchTextPublisher
+            .send("")
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        
     }
 }
+
+
