@@ -9,6 +9,11 @@
 import UIKit
 import Combine
 
+enum IFActions {
+    case loadMoreFollowers
+    case showFollowerDetails(FollowersViewModel)
+}
+
 final class FollowersView: UIView {
     
     var followerViewModel = [FollowersViewModel]()
@@ -22,7 +27,7 @@ final class FollowersView: UIView {
     typealias SnapShot = NSDiffableDataSourceSnapshot<Section, FollowersViewModel>
     private lazy var dataSource = makeDataSource()
     
-    var showFollowerDetailsPublisher = PassthroughSubject<FollowersViewModel, Never>()
+    var followerViewPublisher = PassthroughSubject<IFActions, Never>()
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -88,19 +93,17 @@ final class FollowersView: UIView {
 extension FollowersView: UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
         guard let follower = dataSource.itemIdentifier(for: indexPath) else {
             return
         }
-        
-        showFollowerDetailsPublisher.send(follower)
+        followerViewPublisher.send(.showFollowerDetails(follower))
     }
+
 }
 
 extension FollowersView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         var length = (UIScreen.main.bounds.size.width / 3) - 10
-        
         length = length < 150 ? length : 150
         
         return CGSize(width: length, height: length + 10)
@@ -109,5 +112,10 @@ extension FollowersView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 10, left: 5, bottom: 10, right: 5)
     }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if indexPath.row == followerViewModel.count - 6 {
+            followerViewPublisher.send(.loadMoreFollowers)
+        }
+    }
 }
-

@@ -76,7 +76,7 @@ extension URLSession {
         }.resume()
     }
     
-    func perform<T>(url: URL, responseModel: T.Type, then: @escaping (Result<[T], IFError>) -> Void) where T: Decodable {
+    func perform<T>(url: URL, responseModel: T.Type, then: @escaping (Result<T, IFError>) -> Void) where T: Decodable {
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             
             if let _ = error {
@@ -94,9 +94,10 @@ extension URLSession {
             }
             
             do {
-                let followers: [T] = try JSONDecoder().decode([T].self, from: data)
+                let followers: T = try JSONDecoder().decode(T.self, from: data)
                 then(.success(followers))
             } catch let error {
+                then(.failure(.unableToParseJSON))
                 print(error.localizedDescription)
             }
                             

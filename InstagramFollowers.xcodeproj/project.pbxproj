@@ -27,6 +27,7 @@
 		EF96721225407FC600382AC7 /* IFColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF96721125407FC600382AC7 /* IFColors.swift */; };
 		EF9672152540D1BA00382AC7 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9672142540D1BA00382AC7 /* NetworkManager.swift */; };
 		EF9672172540EEF400382AC7 /* FollowersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9672162540EEF400382AC7 /* FollowersViewModel.swift */; };
+		EFA52661254352D5009FDB5B /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA52660254352D5009FDB5B /* User.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,7 @@
 		EF96721125407FC600382AC7 /* IFColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IFColors.swift; sourceTree = "<group>"; };
 		EF9672142540D1BA00382AC7 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		EF9672162540EEF400382AC7 /* FollowersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowersViewModel.swift; sourceTree = "<group>"; };
+		EFA52660254352D5009FDB5B /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +123,7 @@
 			isa = PBXGroup;
 			children = (
 				EF8997062541A98C00CAEB55 /* Followers.swift */,
+				EFA52660254352D5009FDB5B /* User.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -253,6 +256,7 @@
 				EF8997052541A90700CAEB55 /* FollowersViewController.swift in Sources */,
 				EF96720725404B7D00382AC7 /* IFButton.swift in Sources */,
 				EF9671EA25403C2D00382AC7 /* SceneDelegate.swift in Sources */,
+				EFA52661254352D5009FDB5B /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

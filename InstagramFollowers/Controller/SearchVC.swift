@@ -36,27 +36,44 @@ class SearchVC: UIViewController {
 
 
 extension SearchVC: SearchViewDelegate {
-    
-    //TODO:- refactor code to MVVM
-    
+        
     func didTappedSearchButton(for searchTerm: String) {
         self.showSpinner()
-        getFollowersToken = NetworkManager.shared.getFollowers(for: searchTerm)
+        
+        getFollowersToken = NetworkManager.shared.getUser(for: searchTerm)
             .receive(on: DispatchQueue.main)
-            .sink(
-                receiveCompletion: { ( completion) in
-                    switch completion {
-                    case .finished:
-//                        print("Completion stops observing")
-                        break
-                    case .failure(let error):
-                        print("Error: \(error.rawValue)")
-                    }
-            }, receiveValue: {[weak self] (followers) in
+            .sink(receiveCompletion: {[weak self] (completion) in
                 self?.hideSpinner()
-                let followersViewModel = followers.map({ return FollowersViewModel(follower: $0) })
-                let followersVC = FollowersViewController(followersViewModel: followersViewModel, title: searchTerm)
+                switch completion {
+                case .failure(_):
+                    break
+                case .finished:
+                    break
+                }
+            }, receiveValue: {[weak self] user in
+                self?.hideSpinner()
+                
+                let followersVC = FollowersViewController(user: user)
                 self?.navigationController?.pushViewController(followersVC, animated: true)
             })
+        
+        
+//        getFollowersToken = NetworkManager.shared.getFollowers(for: searchTerm)
+//            .receive(on: DispatchQueue.main)
+//            .sink(
+//                receiveCompletion: { ( completion) in
+//                    switch completion {
+//                    case .finished:
+////                        print("Completion stops observing")
+//                        break
+//                    case .failure(let error):
+//                        print("Error: \(error.rawValue)")
+//                    }
+//            }, receiveValue: {[weak self] (followers) in
+//                self?.hideSpinner()
+//                let followersViewModel = followers.map({ return FollowersViewModel(follower: $0) })
+//                let followersVC = FollowersViewController(followersViewModel: followersViewModel, title: searchTerm)
+//                self?.navigationController?.pushViewController(followersVC, animated: true)
+//            })
     }
 }

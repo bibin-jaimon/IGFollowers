@@ -19,6 +19,7 @@ enum IFError: String, Error {
     case unableToComplete
     case invalidResponse
     case invalidData
+    case unableToParseJSON
 }
 
 class NetworkManager {
@@ -28,12 +29,11 @@ class NetworkManager {
     
     private init() { }
     
-    func getFollowers(for userID: String) -> Future<[Followers], IFError> {
-        let url = URL(string: "\(BASE_URL)users/\(userID)/followers")!
-        print(url.absoluteURL)
+    func getFollowers(for userID: String, page: Int) -> Future<[Followers], IFError> {
+        let url = URL(string: "\(BASE_URL)users/\(userID)/followers?per_page=100&page=\(page)")!
         
         return Future { promise in
-            URLSession.shared.perform(url: url, responseModel: Followers.self) { (result) in
+            URLSession.shared.perform(url: url, responseModel: [Followers].self) { (result) in
                 switch result {
                 case .success(let followers):
                     promise(.success(followers))
@@ -41,6 +41,37 @@ class NetworkManager {
                     promise(.failure(error))
                 }
             }
+        }
+    }
+    
+    func getFollowers(for userID: String) -> Future<[Followers], IFError> {
+        let url = URL(string: "\(BASE_URL)users/\(userID)/followers")!
+        
+        return Future { promise in
+            URLSession.shared.perform(url: url, responseModel: [Followers].self) { (result) in
+                switch result {
+                case .success(let followers):
+                    promise(.success(followers))
+                case .failure(let error):
+                    promise(.failure(error))
+                }
+            }
+        }
+    }
+    
+    func getUser(for userID: String) -> Future<User, IFError> {
+        let url = URL(string: "\(BASE_URL)users/\(userID)")!
+        
+        return Future { promise in
+            URLSession.shared.perform(url: url, responseModel: User.self) { (result) in
+                switch result {
+                case .success(let user):
+                    promise(.success(user))
+                case .failure(let error):
+                    promise(.failure(error))
+                }
+            }
+            
         }
     }
     
