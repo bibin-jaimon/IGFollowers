@@ -9,6 +9,29 @@
 import Foundation
 import UIKit
 
+fileprivate var indicatorView: UIView?
+
+extension UIViewController {
+    
+    func showSpinner() {
+        indicatorView = UIView(frame: self.view.bounds)
+        
+        indicatorView!.backgroundColor = UIColor.init(red: 0.5, green: 0.5, blue: 0.5, alpha: 0.5)
+        let ai = UIActivityIndicatorView(style: .large)
+        
+        ai.center = indicatorView!.center
+        ai.startAnimating()
+        
+        indicatorView!.addSubview(ai)
+        self.view.addSubview(indicatorView!)
+    }
+    
+    func hideSpinner() {
+        indicatorView?.removeFromSuperview()
+        indicatorView = nil
+    }
+}
+
 extension UIView {
     
     func addSubviews(_ views: UIView...) {

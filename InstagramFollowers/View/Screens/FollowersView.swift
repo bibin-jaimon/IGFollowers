@@ -9,7 +9,7 @@
 import UIKit
 import Combine
 
-class FollowersView: UIView {
+final class FollowersView: UIView {
     
     var followerViewModel = [FollowersViewModel]()
     let cellID = "CellID"

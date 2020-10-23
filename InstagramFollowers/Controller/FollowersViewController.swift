@@ -14,6 +14,8 @@ class FollowersViewController: UIViewController {
     let followersViewModel: [FollowersViewModel]
     var username: String?
     
+    var tokens = Set<AnyCancellable>()
+    
     var getUserToken: AnyCancellable?
     
     var followersView = FollowersView()
@@ -37,6 +39,8 @@ class FollowersViewController: UIViewController {
         title = username
         followersView.updateData(followersViewModel)
         
+        createSearchController()
+        
         getUserToken = followersView.showFollowerDetailsPublisher
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { (follower) in
@@ -47,6 +51,27 @@ class FollowersViewController: UIViewController {
             })
     }
     
+    private func createSearchController() {
+        
+        let searchController = IFSearchBar()
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
+        
+        searchController.searchTextPublisher
+            .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
+            .sink { [weak self] (searchText) in
+                self?.filterFollowers(with: searchText)
+        }.store(in: &tokens)
+    }
+    
+    private func filterFollowers(with text: String) {
+        
+    }
+    
+    deinit {
+        getUserToken?.cancel()
+    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
