@@ -11,7 +11,7 @@ import UIKit
 class IFTextField: UITextField {
     
     let padding = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 5)
-    
+        
     override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
@@ -42,6 +42,6 @@ class IFTextField: UITextField {
     override func editingRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: padding)
     }
-    
+
 }
 

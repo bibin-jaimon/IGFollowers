@@ -15,6 +15,12 @@ class IFButton: UIButton {
         commonInit()
     }
     
+    override var isEnabled: Bool {
+        didSet {
+            backgroundColor = isEnabled ? .systemPink : .none
+        }
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -27,8 +33,14 @@ class IFButton: UIButton {
     
     private func commonInit() {
         self.enableProgramaticUI()
-        backgroundColor = .systemPink
+        isEnabled = false
+        layer.borderColor = UIColor.systemPink.cgColor
+        layer.borderWidth = 1
         titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: .bold)
         layer.cornerRadius = 10
+        layer.masksToBounds = true
+        
+        setTitleColor(.white, for: .normal)
+        setTitleColor(.systemPink, for: .disabled)
     }
 }

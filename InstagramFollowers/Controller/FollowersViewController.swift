@@ -8,6 +8,7 @@
 
 import UIKit
 import Combine
+import SwiftUI
 
 class FollowersViewController: UIViewController {
     
@@ -61,13 +62,25 @@ class FollowersViewController: UIViewController {
                 self?.fetchFollowersData()
                 break
             case .showFollowerDetails(let follower):
-                print(follower.name)
-                let followerDetailsVC = FollowerDetailViewController()
-                self?.present(followerDetailsVC, animated: true, completion: nil)
+//                let followerDetailsVC = FollowerDetailViewController(followersViewModel: follower)
+                self?.getFollowerDetails(from: follower)
                 break
             }
 
         })
+    }
+    
+    private func getFollowerDetails(from follower: FollowersViewModel) {
+        
+        NetworkManager.shared.getUser(for: follower.follower.login)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { (completion) in
+                
+            }, receiveValue: { user in
+                let followerDetailsView = FollowerDetailsView(user: user)
+                let host = UIHostingController(rootView: followerDetailsView)
+                self.navigationController?.present(host, animated: true, completion: nil)
+            }).store(in: &tokens)
     }
     
     private func fetchFollowersData() {

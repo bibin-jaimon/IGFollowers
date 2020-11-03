@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 protocol SearchViewDelegate {
     func didTappedSearchButton(for searchTerm: String)
@@ -16,8 +17,14 @@ class SearchView: UIView {
 
     var delegate: SearchViewDelegate?
     
+    @Published var canProceedSearch: Bool = false
+    private var searchButtonEnableSubscriber: AnyCancellable?
+    
+    private var tokens = Set<AnyCancellable>()
+    
     private lazy var searchButton: IFButton = {
         let button = IFButton(title: "Search")
+        button.tag = 1
         button.addTarget(self, action: #selector(didTappedSearchButton), for: .touchUpInside)
         return button
     }()
@@ -25,12 +32,14 @@ class SearchView: UIView {
     private lazy var searchTextField: IFTextField = {
         let textFiled = IFTextField()
         textFiled.placeholder = "Enter username"
+        textFiled.text = "SAllen0400"
         textFiled.delegate = self
         return textFiled
     }()
 
     init(delegate: SearchViewDelegate) {
         super.init(frame: .zero)
+        
         self.delegate = delegate
         commonInit()
     }
@@ -63,6 +72,11 @@ class SearchView: UIView {
     }
     
     private func configureSearchButton() {
+        
+        searchButtonEnableSubscriber = $canProceedSearch
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.isEnabled, on: searchButton)
+        
         NSLayoutConstraint.activate([
             searchButton.widthAnchor.constraint(equalTo: self.safeAreaLayoutGuide.widthAnchor, multiplier: 0.8),
             searchButton.heightAnchor.constraint(equalToConstant: 50),
@@ -72,16 +86,25 @@ class SearchView: UIView {
     }
     
     @objc private func didTappedSearchButton() {
-        self.searchTextField.text = "SAllen0400"
-        guard let searchTerm = self.searchTextField.text, !searchTerm.isEmpty else {
+        
+        guard let searchTerm = self.searchTextField.text else {
             return
         }
+        
         delegate?.didTappedSearchButton(for: searchTerm)
     }
         
 }
 
 extension SearchView: UITextFieldDelegate {
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        
+        guard let searchTerm = textField.text else {
+            return
+        }
+        
+        self.canProceedSearch = !searchTerm.isEmpty
+    }
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true

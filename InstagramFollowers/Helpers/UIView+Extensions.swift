@@ -98,7 +98,7 @@ extension URLSession {
                 then(.success(followers))
             } catch let error {
                 then(.failure(.unableToParseJSON))
-                print(error.localizedDescription)
+                print(error.localizedDescription, url.absoluteURL)
             }
                             
         }.resume()
