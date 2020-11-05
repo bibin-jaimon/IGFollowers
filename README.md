@@ -8,7 +8,15 @@ Concepts used:
 - UITabbar
 - Diffable data source
 - UINavigationController
+- NSCache
+- URLSessionDataTask
+- URLSessionDownloadTask
+- Swift Generics
 
+In progress
+
+- UITableView
+- CoreData
 
 <h1></h1>
 <table>
