@@ -1,5 +1,14 @@
 # IGFollowers
 
+Concepts used:
+
+- Programatic UI
+- Combine
+- UICollectionView
+- UITabbar
+- Diffable data source
+- UINavigationController
+
 
 <h1></h1>
 <table>
