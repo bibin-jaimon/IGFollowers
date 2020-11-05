@@ -11,9 +11,8 @@ import Combine
 
 class IFSearchBar: UISearchController, UISearchBarDelegate {
 
-
     var searchTextPublisher = PassthroughSubject<String, Never>()
-        
+
     init() {
         super.init(searchResultsController: nil)
         commonInit()

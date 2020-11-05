@@ -31,8 +31,7 @@ class SearchView: UIView {
     
     private lazy var searchTextField: IFTextField = {
         let textFiled = IFTextField()
-        textFiled.placeholder = "Enter username"
-        textFiled.text = "SAllen0400"
+        textFiled.placeholder = "Eg: SAllen0400"
         textFiled.delegate = self
         return textFiled
     }()
@@ -60,7 +59,6 @@ class SearchView: UIView {
         configureSearchButton()
         configureSearchTextField()
     }
-    
     
     private func configureSearchTextField() {
         NSLayoutConstraint.activate([
